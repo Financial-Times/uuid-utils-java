@@ -9,23 +9,26 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.UUID;
 
-public class UuidFromUrlGenerator {
+public class GenerateUuid {
+
+  /**
+   * See http://www.ietf.org/rfc/rfc4122.txt - Appendix C
+   */
+  private static final byte[] NAMESPACE_URL_ID = "6ba7b811-9dad-11d1-80b4-00c04fd430c8".getBytes(UTF_8);
 
   private static final String DIGEST_ALG = "SHA-1";
   private static final byte UUID_TYPE = 5;
 
-  private final byte[] ns;
-
-  private UuidFromUrlGenerator(final byte[] ns) {
-    this.ns = ns;
+  public static UUID from(final URL url) {
+    return from(url.toExternalForm());
   }
 
-  public UUID generate(final URL url) {
-    byte[] localId = url.toExternalForm().getBytes(UTF_8);
+  public static UUID from(final String string) {
+    byte[] localId = string.getBytes(UTF_8);
 
     try {
       final MessageDigest md = MessageDigest.getInstance(DIGEST_ALG);
-      md.update(ns);
+      md.update(NAMESPACE_URL_ID);
       md.update(localId);
       byte[] digest = md.digest();
 
@@ -38,7 +41,7 @@ public class UuidFromUrlGenerator {
       hi[5] = digest[2];
       // Set octets zero and one of the time_hi_and_version field to octets 6 and 7 of the hash.
       hi[7] = digest[3];
-      // Set the four most significant bits (bits 12 through 15) of the time_hi_and_version field to the appropriate 4-bit version number generate Section 4.1.3.
+      // Set the four most significant bits (bits 12 through 15) of the time_hi_and_version field to the appropriate 4-bit version number from Section 4.1.3.
       hi[6] |= (UUID_TYPE << 4);
 
       final byte[] lo = new byte[8];
@@ -59,28 +62,7 @@ public class UuidFromUrlGenerator {
     }
   }
 
-  public enum Namesapces {
-
-    IMAGE_MODEL("6ba7b811-9dad-11d1-80b4-00c04fd430c8");
-
-    private final byte[] ns;
-
-    Namesapces(final String ns) {
-      this.ns = ns.getBytes(UTF_8);
-    }
-
-    public byte[] getNs() {
-      return Arrays.copyOf(ns, ns.length);
-    }
-
-  }
-
-  public static UuidFromUrlGenerator with(final Namesapces ns) {
-    return new UuidFromUrlGenerator(ns.getNs());
-  }
-
-  public static UuidFromUrlGenerator with(final String ns) {
-    return new UuidFromUrlGenerator(ns.getBytes(UTF_8));
+  private GenerateUuid() {
   }
 
 }

@@ -7,15 +7,15 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.UUID;
 
-public class UuidFromUuidGenerator {
+public class DeriveUuid {
 
   private final BitSet magic;
 
-  private UuidFromUuidGenerator(final BitSet magic) {
+  private DeriveUuid(final BitSet magic) {
     this.magic = magic;
   }
 
-  public UUID generate(final UUID originalUuid) {
+  public UUID from(final UUID originalUuid) {
     return otherUuid(originalUuid);
   }
 
@@ -43,12 +43,12 @@ public class UuidFromUuidGenerator {
     return new UUID(uuid.getMostSignificantBits(), least);
   }
 
-  public static final UuidFromUuidGenerator with(final Salts salt) {
-    return new UuidFromUuidGenerator(salt.getMagic());
+  public static final DeriveUuid with(final Salts salt) {
+    return new DeriveUuid(salt.getMagic());
   }
 
-  public static final UuidFromUuidGenerator with(final String salt) {
-    return new UuidFromUuidGenerator(saltToMagic(salt));
+  public static final DeriveUuid with(final String salt) {
+    return new DeriveUuid(saltToMagic(salt));
   }
 
   public enum Salts {

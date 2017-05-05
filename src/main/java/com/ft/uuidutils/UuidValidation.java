@@ -2,9 +2,9 @@ package com.ft.uuidutils;
 
 import java.util.UUID;
 
-public class UuidValidator {
+public class UuidValidation {
 
-  public static void validate(final String uuid) {
+  public static void of(final String uuid) {
     if (uuid == null) {
       throw new IllegalArgumentException("Supplied UUID is null");
     }
@@ -12,6 +12,9 @@ public class UuidValidator {
     if (!UUID.fromString(uuid).toString().equalsIgnoreCase(uuid)) {
       throw new IllegalArgumentException("Supplied UUID: " + uuid + ", does not conform to RFC 4122");
     }
+  }
+
+  private UuidValidation() {
   }
 
 }
