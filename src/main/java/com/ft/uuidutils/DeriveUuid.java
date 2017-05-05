@@ -9,27 +9,27 @@ import java.util.UUID;
 
 public class DeriveUuid {
 
-  private final BitSet magic;
+  private final BitSet saltUuidLsb;
 
-  private DeriveUuid(final BitSet magic) {
-    this.magic = magic;
+  private DeriveUuid(final BitSet saltUuidLsb) {
+    this.saltUuidLsb = saltUuidLsb;
   }
 
   public UUID from(final UUID originalUuid) {
     return otherUuid(originalUuid);
   }
 
-  public UUID revert(final UUID generatedUuid) {
-    return otherUuid(generatedUuid);
+  public UUID revert(final UUID derivedUuid) {
+    return otherUuid(derivedUuid);
   }
 
   private UUID otherUuid(UUID uuid) {
-    BitSet uuidBits = BitSet.valueOf(leastSignificantUuidPartToBytes(uuid));
-    uuidBits.xor(magic);
+    final BitSet uuidBits = BitSet.valueOf(leastSignificantUuidPartToBytes(uuid));
+    uuidBits.xor(saltUuidLsb);
 
     // pad to the end of the array in case the bitset has shrunk by 8 bits or more
-    byte[] xor = uuidBits.toByteArray();
-    byte[] padded = new byte[8];
+    final byte[] xor = uuidBits.toByteArray();
+    final byte[] padded = new byte[8];
     Arrays.fill(padded, (byte) 0);
     System.arraycopy(xor, 0, padded, 0, xor.length);
 
@@ -44,30 +44,30 @@ public class DeriveUuid {
   }
 
   public static final DeriveUuid with(final Salts salt) {
-    return new DeriveUuid(salt.getMagic());
+    return new DeriveUuid(salt.getSaltUuidLsb());
   }
 
   public static final DeriveUuid with(final String salt) {
-    return new DeriveUuid(saltToMagic(salt));
+    return new DeriveUuid(saltToUuidLsb(salt));
   }
 
   public enum Salts {
 
     IMAGE_SET("imageset");
 
-    private final BitSet magic;
+    private final BitSet saltUuidLsb;
 
     Salts(final String salt) {
-      this.magic = saltToMagic(salt);
+      this.saltUuidLsb = saltToUuidLsb(salt);
     }
 
-    public BitSet getMagic() {
-      return magic;
+    public BitSet getSaltUuidLsb() {
+      return saltUuidLsb;
     }
 
   }
 
-  private static BitSet saltToMagic(final String salt) {
+  private static BitSet saltToUuidLsb(final String salt) {
     return BitSet.valueOf(
         leastSignificantUuidPartToBytes(
             UUID.nameUUIDFromBytes(salt.getBytes(UTF_8))
@@ -75,7 +75,7 @@ public class DeriveUuid {
     );
   }
 
-  private static byte[] leastSignificantUuidPartToBytes(UUID uuid) {
+  private static byte[] leastSignificantUuidPartToBytes(final UUID uuid) {
     final ByteBuffer bb = ByteBuffer.wrap(new byte[8]);
     bb.putLong(uuid.getLeastSignificantBits());
     return bb.array();
