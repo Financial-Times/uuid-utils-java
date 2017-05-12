@@ -32,7 +32,7 @@ public class DeriveUuidTest {
     final UUID generatedUuid = DeriveUuid.with(Salts.IMAGE_SET).from(initialUuid);
     assertThat(generatedUuid, is(not(initialUuid)));
 
-    final UUID originalUuid = DeriveUuid.with(Salts.IMAGE_SET).revert(generatedUuid);
+    final UUID originalUuid = DeriveUuid.with(Salts.IMAGE_SET).from(generatedUuid);
     assertThat(originalUuid, is(initialUuid));
   }
 

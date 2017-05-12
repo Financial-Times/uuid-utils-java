@@ -19,10 +19,6 @@ public class DeriveUuid {
     return otherUuid(originalUuid);
   }
 
-  public UUID revert(final UUID derivedUuid) {
-    return otherUuid(derivedUuid);
-  }
-
   private UUID otherUuid(UUID uuid) {
     final BitSet uuidBits = BitSet.valueOf(leastSignificantUuidPartToBytes(uuid));
     uuidBits.xor(saltUuidLsb);
