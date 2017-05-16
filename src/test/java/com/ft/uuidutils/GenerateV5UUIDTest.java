@@ -10,8 +10,7 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 
-public class GenerateUuidTest {
-
+public class GenerateV5UUIDTest {
 
   private URL testUrl;
 
@@ -21,9 +20,9 @@ public class GenerateUuidTest {
   }
 
   @Test
-  public void operationIsRepeatable() throws Exception {
-    final UUID firstUuid = GenerateUuid.from(testUrl);
-    final UUID secondUuid = GenerateUuid.from(testUrl);
+  public void testFromUrlIsRepeatable() throws Exception {
+    final UUID firstUuid = GenerateV5UUID.fromURL(testUrl);
+    final UUID secondUuid = GenerateV5UUID.fromURL(testUrl);
 
     assertThat(firstUuid, is(secondUuid));
     assertThat(firstUuid, is(not(sameInstance(secondUuid))));

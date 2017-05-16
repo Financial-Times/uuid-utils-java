@@ -5,20 +5,20 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
 
-import com.ft.uuidutils.DeriveUuid.Salts;
+import com.ft.uuidutils.DeriveUUID.Salts;
 import java.util.UUID;
 import org.junit.Test;
 
-public class DeriveUuidTest {
+public class DeriveUUIDTest {
 
   @Test
-  public void operationIsRepeatable() throws Exception {
+  public void testFromIsRepeatable() throws Exception {
     final UUID initialUuid = UUID.randomUUID();
 
-    final UUID firstResult = DeriveUuid.with(Salts.IMAGE_SET).from(initialUuid);
+    final UUID firstResult = DeriveUUID.with(Salts.IMAGE_SET).from(initialUuid);
     assertThat(firstResult, is(not(initialUuid)));
 
-    final UUID secondResult = DeriveUuid.with(Salts.IMAGE_SET).from(initialUuid);
+    final UUID secondResult = DeriveUUID.with(Salts.IMAGE_SET).from(initialUuid);
     assertThat(secondResult, is(not(initialUuid)));
 
     assertThat(firstResult, is(secondResult));
@@ -26,25 +26,25 @@ public class DeriveUuidTest {
   }
 
   @Test
-  public void operationIsReversible() throws Exception {
+  public void testFromIsReversible() throws Exception {
     final UUID initialUuid = UUID.randomUUID();
 
-    final UUID generatedUuid = DeriveUuid.with(Salts.IMAGE_SET).from(initialUuid);
+    final UUID generatedUuid = DeriveUUID.with(Salts.IMAGE_SET).from(initialUuid);
     assertThat(generatedUuid, is(not(initialUuid)));
 
-    final UUID originalUuid = DeriveUuid.with(Salts.IMAGE_SET).revert(generatedUuid);
+    final UUID originalUuid = DeriveUUID.with(Salts.IMAGE_SET).from(generatedUuid);
     assertThat(originalUuid, is(initialUuid));
   }
 
   @Test
-  public void sameSaltSameResult() throws Exception {
+  public void testFromSameSaltSameResult() throws Exception {
 
     final UUID initialUuid = UUID.randomUUID();
 
-    final UUID firstResult = DeriveUuid.with(Salts.IMAGE_SET).from(initialUuid);
+    final UUID firstResult = DeriveUUID.with(Salts.IMAGE_SET).from(initialUuid);
     assertThat(firstResult, is(not(initialUuid)));
 
-    final UUID secondResult = DeriveUuid.with("imageset").from(initialUuid);
+    final UUID secondResult = DeriveUUID.with("imageset").from(initialUuid);
     assertThat(secondResult, is(not(initialUuid)));
 
     assertThat(firstResult, is(secondResult));
@@ -52,14 +52,14 @@ public class DeriveUuidTest {
   }
 
   @Test
-  public void differentSaltDifferentResult() throws Exception {
+  public void testFromDifferentSaltDifferentResult() throws Exception {
 
     final UUID initialUuid = UUID.randomUUID();
 
-    final UUID firstResult = DeriveUuid.with(Salts.IMAGE_SET).from(initialUuid);
+    final UUID firstResult = DeriveUUID.with(Salts.IMAGE_SET).from(initialUuid);
     assertThat(firstResult, is(not(initialUuid)));
 
-    final UUID secondResult = DeriveUuid.with("not imageset").from(initialUuid);
+    final UUID secondResult = DeriveUUID.with("not imageset").from(initialUuid);
     assertThat(secondResult, is(not(initialUuid)));
 
     assertThat(firstResult, is(not(secondResult)));

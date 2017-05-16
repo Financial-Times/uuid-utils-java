@@ -7,20 +7,24 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.UUID;
 
-public class DeriveUuid {
+public class DeriveUUID {
 
   private final BitSet saltUuidLsb;
 
-  private DeriveUuid(final BitSet saltUuidLsb) {
+  private DeriveUUID(final BitSet saltUuidLsb) {
     this.saltUuidLsb = saltUuidLsb;
+  }
+
+  public static final DeriveUUID with(final Salts salt) {
+    return new DeriveUUID(salt.getSaltUuidLsb());
+  }
+
+  public static final DeriveUUID with(final String salt) {
+    return new DeriveUUID(saltToUuidLsb(salt));
   }
 
   public UUID from(final UUID originalUuid) {
     return otherUuid(originalUuid);
-  }
-
-  public UUID revert(final UUID derivedUuid) {
-    return otherUuid(derivedUuid);
   }
 
   private UUID otherUuid(UUID uuid) {
@@ -41,14 +45,6 @@ public class DeriveUuid {
     final long least = bb.getLong();
 
     return new UUID(uuid.getMostSignificantBits(), least);
-  }
-
-  public static final DeriveUuid with(final Salts salt) {
-    return new DeriveUuid(salt.getSaltUuidLsb());
-  }
-
-  public static final DeriveUuid with(final String salt) {
-    return new DeriveUuid(saltToUuidLsb(salt));
   }
 
   public enum Salts {
