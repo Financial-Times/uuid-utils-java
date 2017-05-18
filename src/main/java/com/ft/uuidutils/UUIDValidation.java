@@ -2,7 +2,7 @@ package com.ft.uuidutils;
 
 import java.util.UUID;
 
-public class UuidValidation {
+public class UUIDValidation {
 
   public static void of(final String uuid) {
     if (uuid == null) {
@@ -14,7 +14,7 @@ public class UuidValidation {
     }
   }
 
-  private UuidValidation() {
+  private UUIDValidation() {
   }
 
 }
